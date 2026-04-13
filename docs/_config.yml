@@ -1,0 +1,23 @@
+title: WDAC Troubleshooting Guide
+description: A guide to troubleshooting and managing Windows Defender
+  Application Control (WDAC) policies using AppControl Manager and Intune.
+logo: "/images/wdac-logo.png"
+remote_theme: just-the-docs/just-the-docs
+color_scheme: light
+
+permalink: pretty
+
+nav_order: 1
+
+aux_links:
+  "Microsoft WDAC Docs":
+    - "https://learn.microsoft.com/en-us/windows/security/application-security/\
+      application-control/app-control-for-business/appcontrol"
+
+footer_content: "WDAC Troubleshooting Guide &mdash; Internal Documentation"
+
+search_enabled: true
+search.button: true
+
+back_to_top: true
+back_to_top_text: "Back to top"
