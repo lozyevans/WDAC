@@ -218,6 +218,12 @@ WDAC policies are deployed to managed devices through **Microsoft Intune** using
 
 ## Next Steps
 
+For deeper background on specific topics:
+
+- [WDAC vs AV & EDR](wdac-vs-av-edr.md) — How WDAC complements antivirus and endpoint detection
+- [Trust Models Deep Dive](trust-models.md) — Managed Installer, ISG, self-signing, and choosing the right model
+- [Common Pitfalls & Lifecycle](common-pitfalls-lifecycle.md) — Avoiding hash sprawl, phased rollout, and continuous governance
+
 Ready to start managing WDAC policies? See the operational guides:
 
 - [Change Policy Settings](change-policy-settings.md) — Switch between Enforced and Audit mode
