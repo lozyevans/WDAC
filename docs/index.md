@@ -14,6 +14,8 @@ A step-by-step guide to managing and troubleshooting Windows Defender Applicatio
 
 ## Overview
 
+For a comprehensive introduction to WDAC — how it works, policy types, rule levels, event IDs, and deployment — see the **[WDAC Overview]({% link wdac-overview.md %})** page.
+
 A commonly recommended way to use Windows Defender Application Control (WDAC) in an enterprise environment is to adopt a **default-deny, explicit allow-list model**, where only known and trusted code is permitted to run, and everything else is blocked by default.
 
 In practice, this starts with a well-scoped **base policy** (for example, "Default Windows" or "Allow Microsoft") that defines the core trust boundary, and then uses **supplemental policies** to add explicit allow rules for individual line-of-business applications as they are validated, rather than expanding the base policy over time.
