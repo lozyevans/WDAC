@@ -271,6 +271,15 @@ Click **Add logs to the selected policy**.
 
 ![Add logs to the selected policy button](images/image32.png)
 
+{: .warning-title }
+> Back Up the Policy Before Merging
+>
+> Before clicking **Add logs to the selected policy**, make a backup copy of the supplemental policy XML created in Part 3 (e.g., copy it to `MyPolicy.xml.bak`).
+>
+> The merge operation in AppControl Manager has been observed to **overwrite the target policy with only the newly added rules** rather than appending to existing ones. After the merge, open the resulting XML and confirm that both the rules from the folder scan (Part 3) and the rules from the event logs are present.
+>
+> If anything is missing, restore from the backup and perform the merge using the **Microsoft WDAC Wizard** (Application Control Wizard) instead — its merge function has been reliable in practice.
+
 ---
 
 ### Step 24 — Confirm Success

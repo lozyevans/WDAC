@@ -51,6 +51,7 @@ Alongside this, Microsoft recommends using **explicit deny policies**, particula
 | [Change Policy Settings]({% link change-policy-settings.md %}) | Switch a WDAC policy between Enforced and Audit modes |
 | [Create a Supplemental Policy]({% link create-supplemental-policy.md %}) | Generate a new supplemental allow policy for an application |
 | [Update a Supplemental Policy from Event Logs]({% link update-supplemental-from-logs.md %}) | Add missing rules to an existing supplemental policy |
+| [Manage Citrix VDA with Managed Installer]({% link manage-citrix-vda.md %}) | Use the Managed Installer trust model to handle Citrix VDA updates without rule churn |
 | [Update Policy Name & Details]({% link update-policy-name.md %}) | Edit the Friendly Name, version, and description of a policy |
 | [Validate Policies on a Device]({% link validate-policy.md %}) | Confirm policies have applied correctly using CITool |
 | [Troubleshoot Stuck Policies]({% link troubleshoot-stuck-policies.md %}) | Resolve policies that fail to update via Intune |

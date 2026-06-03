@@ -18,9 +18,22 @@ When an application is being partially blocked by WDAC, you can use exported Cod
   - Path: `Application and Services Logs → Microsoft → Windows → Code Integrity → Operational`
 - The **supplemental policy** to be updated (original XML file)
 - The **Base policy ID** or the Base policy XML which the supplemental policy is associated with
+- A **backup copy** of the supplemental policy XML before any merge operation (see warning below)
 
 {: .best-practice }
 > **Best Practice:** Clear the event logs before installing the app, install the app, then export the event logs. This ensures you only capture events related to that specific application.
+
+{: .warning-title }
+> Back Up the Original Policy Before Merging
+>
+> The **Add logs to the selected policy** action in AppControl Manager does not always perform a true merge — in some cases it has been observed to overwrite the target policy with only the newly added rules, effectively replacing existing rules rather than appending to them.
+>
+> Before running any merge, **always make a backup copy of the original supplemental policy XML** (e.g., `MyPolicy.xml.bak`). If the merge result is missing previously authored rules, restore from the backup and try one of the following:
+>
+> - Re-run the merge in AppControl Manager and re-validate the rule count in the resulting XML
+> - Use the **Microsoft WDAC Wizard** (Application Control Wizard) — its merge function has been reliable in practice and is a safe fallback when the community tool produces unexpected results
+>
+> After any merge, open the resulting XML and confirm both the original rules and the new rules are present before deploying.
 
 ---
 
@@ -96,6 +109,9 @@ Review each entry and select only the ones relevant to the application. Then cli
 Click **Add logs to the selected policy**.
 
 ![Add logs to the selected policy](images/image38.png)
+
+{: .warning }
+> Confirm you have a backup of the original supplemental policy XML before clicking this button. The merge has been observed to overwrite existing rules rather than appending to them. After the merge completes, open the updated XML and verify that both the pre-existing rules and the newly added rules are present. If anything is missing, restore from the backup and merge using the **Microsoft WDAC Wizard** instead.
 
 ---
 

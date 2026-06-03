@@ -42,6 +42,13 @@ Applications frequently rely on updaters, plugins, helper processes, and child e
 
 Blocking OS components or critical application dependencies due to insufficient testing. This is often caused by starting with an overly restrictive base policy or enforcing before audit data is fully analysed.
 
+### Trusting Tool Merges Without a Backup
+
+Policy editing tools do not all merge XML the same way. The **Add logs to the selected policy** action in AppControl Manager (the community app) has been observed to **overwrite the target policy with only the newly added rules** rather than appending to the existing rule set — silently dropping previously authored rules.
+
+{: .warning }
+> Always copy the supplemental policy XML to a `.bak` file before any merge, and **diff the result** (or at minimum spot-check rule counts) before deploying. If the merge has dropped rules, restore from the backup and merge using the **Microsoft WDAC Wizard** (Application Control Wizard) instead — its merge function has been reliable in practice.
+
 ---
 
 ## The WDAC Lifecycle
@@ -114,6 +121,7 @@ WDAC is not "deploy and forget":
 | Enforce without audit validation | Guarantees user-impacting blocks and erodes confidence |
 | Skip phased rollout | A single misconfigured policy can disrupt the entire estate |
 | Treat WDAC as a one-time project | Applications and threats change — policies must evolve |
+| Merge policies without backing up the original XML | Some tool merges overwrite instead of append — losing existing rules silently |
 
 ---
 
