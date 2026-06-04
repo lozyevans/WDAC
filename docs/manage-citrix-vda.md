@@ -184,6 +184,26 @@ Notes on the XML:
 - The benign `Deny` rules in the `Exe` and `Dll` collections are there to make the rule collections non-empty so `<Services EnforcementMode="Enabled" />` and `<SystemApps Allow="Enabled" />` actually take effect. They target a non-existent file path and never block anything real.
 - The Citrix rule uses `BinaryName="*"` which makes **every Citrix-signed binary** a managed installer. On end-user endpoints, consider narrowing this to specific service or updater binaries to avoid user-launched Citrix apps acting as installers. On dedicated VDA hosts the broad rule is usually acceptable.
 
+#### How to get the Citrix publisher string for the rule
+
+The `PublisherName` in the Citrix rule (`O=CITRIX SYSTEMS, INC., L=FORT LAUDERDALE, S=FLORIDA, C=US`) is the **subject** of the Authenticode signing certificate on a Citrix binary. The VDA installer (`VDAWorkstationSetup_2511.exe`) is a self-extracting bundle, so the signed binary you want is *inside* it. The certificate was extracted as follows:
+
+1. **Open the installer as an archive.** Using [7-Zip](https://www.7-zip.org/), right-click `VDAWorkstationSetup_2511.exe` → **7-Zip → Open archive**. This exposes the embedded payload without running the installer.
+2. **Extract a signed Citrix component.** From inside the archive, extract `CitrixUpgradeAgent_x64.msi` (any consistently Citrix-signed binary works; the upgrade agent is a reliable choice because it's present in every VDA build and signed by the same certificate).
+3. **Read the certificate subject.** Right-click the extracted file → **Properties → Digital Signatures → Citrix Systems, Inc. → Details → View Certificate → Details → Subject**, or run PowerShell against the extracted file:
+
+   ```powershell
+   (Get-AuthenticodeSignature ".\CitrixUpgradeAgent_x64.msi").SignerCertificate | Format-List Subject, Issuer, Thumbprint
+   ```
+
+4. **Map the subject to the AppLocker `PublisherName`.** AppLocker expects the certificate subject in canonical comma-separated form. The `Subject` field — for example `CN=Citrix Systems, Inc., O=CITRIX SYSTEMS, INC., L=Fort Lauderdale, S=Florida, C=US` — maps directly to the `O=...`, `L=...`, `S=...`, `C=...` segments used in the rule.
+
+{: .note }
+> The fastest way to get a correctly formatted `FilePublisherCondition` is to point the **AppLocker rule wizard** (or `New-AppLockerPolicy`) at the extracted, signed binary — it reads the certificate and emits the exact `PublisherName`, `ProductName`, and `BinaryName` values for you, which you can then widen to `ProductName="*" BinaryName="*"`.
+
+{: .warning }
+> Always verify the signature is valid (`Status = Valid`) and sourced from a binary you downloaded directly from Citrix. Building a Managed Installer rule from an unverified or tampered binary would trust the wrong publisher. Re-check the subject after any Citrix certificate rollover.
+
 ---
 
 ## Deployment Pattern (Detect + Remediate)
