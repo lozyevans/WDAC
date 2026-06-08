@@ -59,28 +59,28 @@
       * For end-to-end trust: WDAC / App Control policy with Option 13
         (Enabled:Managed Installer) deployed.
 
-    Environment-specific notes (HSBC Silver tenant / MSA1865, verified
-    from the tenant settings report dated 2026-03-25):
+    Environment-specific notes (verify against your own tenant's App
+    Control / AppLocker configuration before deploying):
 
-    * WDAC Option 13 (Enabled:Managed Installer) is ALREADY enabled on all
-      four base App Control policies in this tenant (NoScriptCLM, Driver
-      Block Rules audit + enforced, User Mode Block Rules Allow_Citrix).
-      No additional WDAC change is required for MI trust to take effect.
+    * WDAC Option 13 (Enabled:Managed Installer) is assumed to be ALREADY
+      enabled on the base App Control policies in the environment. When
+      that is the case, no additional WDAC change is required for MI trust
+      to take effect.
 
-    * A WDAC supplemental policy "Allow-Citrix" already trusts Citrix
-      binaries directly (CertPublisher + per-file hash). Our MI rule is
-      COMPLEMENTARY: the supplemental allows Citrix binaries to execute;
-      the MI rule additionally lets files Citrix writes inherit MI trust.
+    * If a WDAC supplemental policy already trusts Citrix binaries directly
+      (CertPublisher + per-file hash), the MI rule is COMPLEMENTARY: the
+      supplemental allows Citrix binaries to execute; the MI rule
+      additionally lets files Citrix writes inherit MI trust.
 
-    * The existing AppLocker CSP profile (MDM_Silver-Win-DCP-Windows-
-      AppLocker-CLMOnly) deploys ONLY a Script rule collection at
-      Grouping="Native". This script writes Dll / Exe / ManagedInstaller
-      collections to the LOCAL AppLocker store. The two stores are
-      separate; AppLocker evaluates the union, so no conflict.
+    * If an existing AppLocker CSP profile deploys ONLY a Script rule
+      collection at Grouping="Native", this script writes Dll / Exe /
+      ManagedInstaller collections to the LOCAL AppLocker store. The two
+      stores are separate; AppLocker evaluates the union, so there is no
+      conflict.
 
-    * The previous custom OMA-URI MI profile and the
-      WDAC-AppTagging-Device-CSP profile have been REMOVED from the
-      tenant. AppId tagging is a different feature from AppLocker MI; it
+    * Any previous custom OMA-URI MI profile and AppId tagging device CSP
+      profile should be REMOVED. AppId tagging is a different feature from
+      AppLocker MI; it
       was causing unintended WDAC blocks. This script's approach (the
       standard AppLocker ManagedInstaller collection + WDAC Option 13) is
       the supported, lower-risk path.
@@ -255,7 +255,7 @@ function Get-AppIdServiceState {
 
 function Get-IntuneAgentVersionInfo {
     # Informational only - the Microsoft Recommended User Mode Block List in
-    # use on this tenant denies Microsoft.Management.Services.IntuneWindowsAgent.exe
+    # use in the environment denies Microsoft.Management.Services.IntuneWindowsAgent.exe
     # at MinimumFileVersion 1.46.204.0. In WDAC blocklist semantics, that
     # blocks versions <= 1.46.204.0. Explicit deny beats MI trust, so if a
     # device is running an IME at or below that floor it CANNOT act as an MI.
@@ -330,7 +330,7 @@ function Get-ManagedInstallerCompliance {
     $ruleCollections = @($xml.AppLockerPolicy.RuleCollection)
 
     # ---- 2. ManagedInstaller publisher rules ----
-    # In this tenant the existing CSP-deployed AppLocker policy contains only
+    # Where the existing CSP-deployed AppLocker policy contains only
     # a Script collection (Grouping="Native"). The ManagedInstaller collection
     # therefore lives in the LOCAL store, written by the remediation script.
     $managedInstallerCollection = $ruleCollections | Where-Object { $_.Type -eq 'ManagedInstaller' } | Select-Object -First 1

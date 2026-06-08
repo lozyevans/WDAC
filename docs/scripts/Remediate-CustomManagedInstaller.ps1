@@ -62,36 +62,36 @@
       * For end-to-end trust: WDAC / App Control policy with Option 13
         (Enabled:Managed Installer) deployed.
 
-    Environment-specific notes (HSBC Silver tenant / MSA1865, verified
-    from the tenant settings report dated 2026-03-25):
+    Environment-specific notes (verify against your own tenant's App
+    Control / AppLocker configuration before deploying):
 
-    * WDAC Option 13 (Enabled:Managed Installer) is ALREADY enabled on all
-      four base App Control policies in this tenant (NoScriptCLM, Driver
-      Block Rules audit + enforced, User Mode Block Rules Allow_Citrix).
-      No additional WDAC change is required for MI trust to take effect.
+    * WDAC Option 13 (Enabled:Managed Installer) is assumed to be ALREADY
+      enabled on the base App Control policies in the environment. When
+      that is the case, no additional WDAC change is required for MI trust
+      to take effect.
 
-    * The Allow_Citrix WDAC base policy disables Option 19 (Dynamic Code
-      Security) intentionally for Citrix VDA compatibility, and removes
-      InstallUtil.exe from the deny list to permit Citrix autoupdate. Both
-      are deliberate, pre-existing decisions; this script does not touch
-      WDAC and therefore does not affect them.
+    * If a Citrix-focused WDAC base policy disables Option 19 (Dynamic Code
+      Security) for Citrix VDA compatibility, and removes InstallUtil.exe
+      from the deny list to permit Citrix autoupdate, those are deliberate
+      decisions; this script does not touch WDAC and therefore does not
+      affect them.
 
-    * A WDAC supplemental policy "Allow-Citrix" already trusts Citrix
-      binaries directly (CertPublisher + per-file hash). Our MI rule is
-      COMPLEMENTARY: the supplemental allows Citrix binaries to execute;
-      the MI rule additionally lets files Citrix writes inherit MI trust.
-      Keep both in place.
+    * If a WDAC supplemental policy already trusts Citrix binaries directly
+      (CertPublisher + per-file hash), the MI rule is COMPLEMENTARY: the
+      supplemental allows Citrix binaries to execute; the MI rule
+      additionally lets files Citrix writes inherit MI trust. Keep both in
+      place.
 
-    * The existing AppLocker CSP profile (MDM_Silver-Win-DCP-Windows-
-      AppLocker-CLMOnly) deploys ONLY a Script rule collection at
-      Grouping="Native". Set-AppLockerPolicy -Merge in this script writes
-      Dll / Exe / ManagedInstaller collections to the LOCAL AppLocker
-      store. The two stores are separate; AppLocker evaluates the union,
-      so there is no conflict with the existing CSP-deployed Script rules.
+    * If an existing AppLocker CSP profile deploys ONLY a Script rule
+      collection at Grouping="Native", Set-AppLockerPolicy -Merge in this
+      script writes Dll / Exe / ManagedInstaller collections to the LOCAL
+      AppLocker store. The two stores are separate; AppLocker evaluates
+      the union, so there is no conflict with the existing CSP-deployed
+      Script rules.
 
-    * The previous custom OMA-URI MI profile and the
-      WDAC-AppTagging-Device-CSP profile have been REMOVED from the
-      tenant. AppId tagging is a different feature from AppLocker MI; it
+    * Any previous custom OMA-URI MI profile and AppId tagging device CSP
+      profile should be REMOVED. AppId tagging is a different feature from
+      AppLocker MI; it
       was causing unintended WDAC blocks. This script's approach is the
       supported, lower-risk replacement.
 
